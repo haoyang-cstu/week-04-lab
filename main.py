@@ -34,6 +34,25 @@ def get_books(status: Optional[str] = None):
         return [b for b in books_db if b["status"] == status]
     return books_db
 
+@app.get("/books/stats")
+def get_stats():
+    total = len(books_db)
+
+    # Count books in each status bucket.
+    by_status = {}
+    for book in books_db:
+        by_status[book["status"]] = by_status.get(book["status"], 0) + 1
+
+    # Average rating across books that actually have a rating.
+    ratings = [b["rating"] for b in books_db if b["rating"] is not None]
+    average_rating = round(sum(ratings) / len(ratings), 2) if ratings else None
+
+    return {
+        "total": total,
+        "by_status": by_status,
+        "average_rating": average_rating,
+    }
+
 @app.get("/books/{book_id}")
 def get_book(book_id: int):
     for book in books_db:
