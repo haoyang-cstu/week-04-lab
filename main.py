@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 
@@ -24,7 +22,7 @@ def health():
 
 
 @app.get("/books", response_model=list[BookResponse])
-def get_books(status: Optional[str] = None, db: Session = Depends(get_db)):
+def get_books(status: str | None = None, db: Session = Depends(get_db)):
     query = db.query(Book)
     if status:
         # Filter by status query parameter, e.g. GET /books?status=reading
@@ -61,13 +59,13 @@ def get_book(book_id: int, db: Session = Depends(get_db)):
     return book
 
 
-@app.post("/books", status_code=201, response_model=BookResponse)
-def create_book(book: BookCreate, db: Session = Depends(get_db)):
-    new_book = Book(**book.model_dump())
-    db.add(new_book)
+@app.post("/books", response_model=BookResponse, status_code=201)
+def create_book(data: BookCreate, db: Session = Depends(get_db)):
+    book = Book(**data.model_dump())
+    db.add(book)
     db.commit()
-    db.refresh(new_book)
-    return new_book
+    db.refresh(book)
+    return book
 
 
 @app.put("/books/{book_id}", response_model=BookResponse)
