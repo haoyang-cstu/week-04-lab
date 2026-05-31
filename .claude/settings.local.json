@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1280,1600 --screenshot=\"C:\\\\Users\\\\yuihu\\\\docs.png\" \"http://localhost:8000/docs\")",
+      "Bash(echo \"exit: $?\")",
+      "Read(//c/Users/yuihu/**)"
+    ]
+  }
+}
